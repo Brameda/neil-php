@@ -53,6 +53,8 @@ class TradeApiClient{
 		$headers = $this->build_headers();		
 		$url = $this->build_url($path, $params);
 		
+		print_r($_GET);
+		
 		return Requests::get($url, $headers=$headers);
 	}
 	
@@ -73,10 +75,11 @@ class TradeApiClient{
 		}
 	}
 	
-	function category($path='/', $order_by=Null, $limit=50, $offset=0){
+	function category($path='/', $filters=array(), $order_by=Null, $limit=50, $offset=0){
 		
+		print_r($filters);
 		
-		$response = $this->get('collection/categories', array('path'=> $path));
+		$response = $this->get('collection/categories', array('path'=> $path, 'filters'=>$filters));
 		
 		if ($response->status_code == 200){
 			return json_decode($response->body, true);

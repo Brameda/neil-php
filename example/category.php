@@ -11,7 +11,23 @@ if (isset($_GET['path'])){
 	$path = '/';
 }
 
-$cat = $client->category($path=$path);
+
+$query  = explode('&', $_SERVER['QUERY_STRING']);
+$params = array();
+
+foreach( $query as $param )
+{
+  list($name, $value) = explode('=', $param);
+  $params[urldecode($name)][] = urldecode($value);
+}
+
+if(isset($params['filters'])){
+	$filters = $params['filters'];
+} else {
+	$filters = Null;
+}
+
+$cat = $client->category($path=$path, $filters=$filters);
 
 ?>
 

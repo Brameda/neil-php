@@ -1,6 +1,9 @@
 <?php
 	
 	
+
+
+	
 function image_url($asset, $width, $height, $mode, $title){
 	
 }
@@ -8,21 +11,42 @@ function image_url($asset, $width, $height, $mode, $title){
 function image_tag($asset, $width, $height, $mode, $title){
 	
 }
-	
 
-function facet_option_set_url($filter, $option){
-	
-	if(isset($_GET['filters'])){
-		$filters = $_GET['filters'];
+
+function _get_filters_from_request(){
+	$query  = explode('&', $_SERVER['QUERY_STRING']);
+	$params = array();
+
+	foreach( $query as $param ){
+	  list($name, $value) = explode('=', $param);
+	  $params[urldecode($name)][] = urldecode($value);
+	}
+
+	if(isset($params['filters'])){
+		$filters = $params['filters'];
 	} else {
 		$filters = array();
 	}
 	
-	array_push($filters, $filter['code'].':'.$option['value']);
+	return $filters;
+}
+
+function facet_option_set_url($filter, $option){
+	
+	$filters = _get_filters_from_request();
+	$filters[] = $filter['code'].':'.$option['value'];
 	
 	print_r($filters);
 	
-	return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($filters);
+	$params_get = array_merge($_GET, array('filters'=>$filters));
+	
+	foreach($filters as $item){
+		print $item
+	}
+	
+	print_r($params);
+	
+	return $_SERVER['SCRIPT_NAME'] . '?' . urldecode(http_build_query($params));
 }
 
 function facet_option_set_tag($filter, $option){
